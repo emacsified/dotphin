@@ -107,7 +107,10 @@ function configure_git() {
 }
 
 function configure_dotfiles() {
-	configure_kitty()
+	configure_kitty
+	configure_aerospace
+	configure_tmux
+	configure_mise
 }
 
 configure_kitty() {
@@ -115,6 +118,16 @@ configure_kitty() {
 }
 configure_aerospace() {
 	copy_file "aerospace" $DOTFILES_REPO/aerospace/aerospace.toml $HOME/.config/aerospace/aerospace.toml
+}
+
+configure_tmux() {
+	copy_file "tmux.conf" $DOTFILES_REPO/tmux/tmux.conf $HOME/.tmux.conf
+	mkdir -p ~/.config/tmux/plugins/catppuccin
+	git clone https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin
+}
+
+configure_mise() {
+	copy_file "mise" $DOTFILES_REPO/mise/mise.toml $HOME/.config/mise/mise.toml
 }
 
 function configure_ssh() {
