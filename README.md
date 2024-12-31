@@ -1,4 +1,12 @@
-# Dotfiles
+# Dotphin
+```
+        _../|_
+      ='__   _~-.
+           \'  ~-`\._
+                 |/~`
+   .    .    .    .    .
+_.`(._.`(._.`(._.`(._.`(._
+```
 
 This repository contains scripts to bootstrap my Macbook, as well as initialise
 and update dotfiles.
