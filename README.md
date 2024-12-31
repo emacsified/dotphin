@@ -11,9 +11,8 @@ It will:
 ## Running
 - If you trust me, you can simply run `curl -s https://raw.githubusercontent.com/emacsified/dotfiles/main/setup.sh | bash`A
 
-[!WARNING]
-
-This script should double-check for file existence to ensure it does not clobber existing files, however this is not guaranteed.
+> [!WARNING]
+> This script should double-check for file existence to ensure it does not clobber existing files, however this is not guaranteed.
 
 This will run the setup script, which will:
 - Prompt you for a profile - work will install the templates with `work` files overlaid, while personal will do the same with `personal` files overlaid.
@@ -31,9 +30,8 @@ This will run the setup script, which will:
 - Any profile specific setup in `./profiles/setup-work.sh`
 - Prompt you to restart the terminal.
 
-[!NOTE]
-
-If you run `./setup --update`, it will not clone the repo, or prompt you to restart terminal.
+> [!NOTE]
+> If you run `./setup --update`, it will not clone the repo, or prompt you to restart terminal.
 
 
 ## GPG signing
