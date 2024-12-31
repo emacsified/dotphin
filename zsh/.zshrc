@@ -146,7 +146,7 @@ export FZF_DEFAULT_OPTS=" \
 --multi"
 
 # init mise for version managing
-eval"$(mise activate zsh)"
+eval "$(mise activate zsh)"
 
 # init starship prompt
 eval "$(starship init zsh)"
