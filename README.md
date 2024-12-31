@@ -12,6 +12,7 @@ It will:
 - If you trust me, you can simply run `curl -s https://raw.githubusercontent.com/emacsified/dotfiles/main/setup.sh | bash`A
 
 [!WARNING]
+
 This script should double-check for file existence to ensure it does not clobber existing files, however this is not guaranteed.
 
 This will run the setup script, which will:
@@ -23,7 +24,7 @@ This will run the setup script, which will:
 - Link brew completions and apps
 - Configure ZSH and plugins
 - Configure Git and config
-- Configure SSH, including (GPG Signing from 1pass)[#gpg-signing]
+- Configure SSH, including [GPG Signing from 1pass](#gpg-signing)
 - Copy all dotfiles to the relevant locations via symlink
 - Install quartz filters for PDF editing
 - Hide some mac home apps
@@ -31,6 +32,7 @@ This will run the setup script, which will:
 - Prompt you to restart the terminal.
 
 [!NOTE]
+
 If you run `./setup --update`, it will not clone the repo, or prompt you to restart terminal.
 
 
