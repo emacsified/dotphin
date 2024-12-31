@@ -1,0 +1,70 @@
+[core]
+	excludesfile = ~/.dotfiles/git/.gitignore
+
+	# Make `git rebase` safer on macOS (http://www.git-tower.com/blog/make-git-rebase-safe-on-osx)
+	trustctime = false
+
+	# Prevent showing files whose names contain non-ASCII symbols as unversioned (http://michael-kuehnel.de/git/2014/11/21/git-mac-osx-and-german-umlaute.html)
+	precomposeunicode = false
+
+	# Speed up commands involving untracked files (https://git-scm.com/docs/git-update-index#_untracked_cache)
+	untrackedCache = true
+
+[init]
+	defaultBranch = main
+
+[user]
+	name = Ash McBride
+	email = ash@ashmcbri.de
+	signingkey = 2CB691A35DD056B7
+
+[diff]
+	# Detect copies as well as renames
+	renames = copies
+	# Show whitespace errors in diffs
+	wsErrorHighlight = all
+
+[help]
+	#Automatically correct and execute mistyed commands with a 1-second delay.
+	autocorrect = 10
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+
+[fetch]
+	prune = true
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = always
+
+[advice]
+	statusHints = off
+
+[alias]
+	last = log -1 HEAD
+	remotes = remote -v
+	branches = branch -vv --all
+
+[include]
+	path = /Users/ash.mcbride/.gitconfig.local
+
+[dotfiles]
+	managed = true
+	lastupdate = 202411211107
+
+[credential]
+	helper = osxkeychain
+
+[commit]
+	gpgsign = true
+
+[gpg]
+	program = gpg
+	format = ssh
+
+[gpg:"ssh"]
+	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"

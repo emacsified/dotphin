@@ -1,0 +1,284 @@
+#!/usr/bin/env zsh
+
+main() {
+    ask_for_profile
+    ask_for_sudo
+    install_homebrew
+    if [[ "$1" != "--update" ]]; then
+        clone_dotfiles_repo
+    fi
+    install_packages_with_brewfile
+    link_brew_completions
+    configure_zsh
+    configure_git
+    configure_ssh
+    configure_vscode
+    install_quartz_filter
+    hide_home_applications
+    profile_specifics
+    if [[ "$1" != "--update" ]]; then
+        finish
+    fi
+}
+
+DOTFILES_REPO=$HOME/.dotfiles
+
+# Steps
+
+function ask_for_profile() {
+    step "Asking for profile"
+    if [[ -f $DOTFILES_REPO/profile ]]; then
+        PROFILE=$(cat $DOTFILES_REPO/profile)
+        success "Found saved profile: $PROFILE"
+    else
+        info "Please enter the profile to be used (private|work):"
+        read PROFILE
+        success "Using profile: $PROFILE"
+    fi
+}
+
+function ask_for_sudo() {
+    step "Prompting for sudo password"
+    if sudo --validate; then
+        # Keep-alive
+        while true; do sudo --non-interactive true; \
+            sleep 10; kill -0 "$$" || exit; done 2>/dev/null &
+        success "Temporary sudo mode activated"
+    else
+        error "sudo failed"
+    fi
+}
+
+function clone_dotfiles_repo() {
+    clone_or_update "Dotfiles" ${DOTFILES_REPO} "https://github.com/emacsified/dotfiles.git"
+    echo $PROFILE > $DOTFILES_REPO/profile
+}
+
+function install_homebrew() {
+    step "Installing Homebrew"
+    if hash brew 2>/dev/null; then
+        info "Homebrew already exists"
+    else
+        if true | bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+            if [ "$(uname -p)" = "i386" ]; then
+                eval "$(/usr/local/bin/brew shellenv)"
+            else
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+            fi
+            success "Homebrew installation succeeded"
+        else
+            error "Homebrew installation failed"
+        fi
+    fi
+}
+
+function install_packages_with_brewfile() {
+    DEFAULT_BREW_FILE_PATH="${DOTFILES_REPO}/brew/macOS.Brewfile"
+    PROFILE_BREW_FILE_PATH="${DOTFILES_REPO}/brew/${PROFILE}.Brewfile"
+    step "Installing software with brew"
+    if cat $DEFAULT_BREW_FILE_PATH $PROFILE_BREW_FILE_PATH | brew bundle check --no-upgrade --file=- &> /dev/null; then
+        info "Brewfile's dependencies are already satisfied"
+    else
+        if cat $DEFAULT_BREW_FILE_PATH $PROFILE_BREW_FILE_PATH | brew bundle --no-upgrade --file=-; then
+            success "Brewfile installation succeeded"
+        else
+            warning "Brewfile installation failed"
+        fi
+    fi
+}
+
+function link_brew_completions() {
+    step "Linking brew completions"
+    if brew completions state | grep -q "are linked"; then
+        info "Brew completions are already linked"
+    else
+        brew completions link &> /dev/null
+        success "Brew completions linked successfully"
+    fi
+}
+
+function configure_zsh() {
+    addTemplateToFileIfNeeded $DOTFILES_REPO/zsh/.zshrc_template ".zshrc source" $HOME/.zshrc
+}
+
+function configure_git() {
+    GIT_CONFIG_TEMPLATE="$DOTFILES_REPO/git/.gitconfig_template_$PROFILE"
+    addTemplateToFileIfNeeded $GIT_CONFIG_TEMPLATE ".gitconfig include" $HOME/.gitconfig
+}
+
+function configure_ssh() {
+    if [[ ! -d $HOME/.ssh ]]; then
+        mkdir $HOME/.ssh
+    fi
+    SSH_CONFIG_TEMPLATE="$DOTFILES_REPO/ssh/config_template_$PROFILE"
+    addTemplateToFileIfNeeded $SSH_CONFIG_TEMPLATE "ssh config include" $HOME/.ssh/config
+}
+
+function configure_vscode() {
+    if [[ ! -d $HOME/Library/Application\ Support/Code/User ]]; then
+        mkdir -p $HOME/Library/Application\ Support/Code/User
+    fi
+    copy_file "VSCode settings" $DOTFILES_REPO/vscode/settings.json $HOME/Library/Application\ Support/Code/User/settings.json
+    copy_file "VSCode keybindings" $DOTFILES_REPO/vscode/keybindings.json $HOME/Library/Application\ Support/Code/User/keybindings.json
+
+    EXTENSIONS_INSTALLED=$(code --list-extensions)
+    for extension in `cat $DOTFILES_REPO/vscode/extensions.txt $DOTFILES_REPO/vscode/extensions-$PROFILE.txt`
+    do
+        step "Installing VSCode extension $extension"
+        if echo $EXTENSIONS_INSTALLED | grep -c $extension &> /dev/null; then
+            info "VSCode extension $extension already installed"
+        else
+            if code --install-extension $extension &> /dev/null; then
+                success "VSCode extension $extension installed successfully"
+            else
+                error "Failed to install VSCode extension $extension"
+            fi
+        fi
+    done
+}
+
+
+function install_quartz_filter() {
+    if [[ ! -d $HOME/Library/Filters ]]; then
+        mkdir -p $HOME/Library/Filters
+    fi
+    copy_file "Quartz Filter Minimal" $DOTFILES_REPO/quartz/Reduce\ File\ Size\ Minimal.qfilter $HOME/Library/Filters/Reduce\ File\ Size\ Minimal.qfilter
+    copy_file "Quartz Filter Medium" $DOTFILES_REPO/quartz/Reduce\ File\ Size\ Medium.qfilter $HOME/Library/Filters/Reduce\ File\ Size\ Medium.qfilter
+    copy_file "Quartz Filter Extreme" $DOTFILES_REPO/quartz/Reduce\ File\ Size\ Extreme.qfilter $HOME/Library/Filters/Reduce\ File\ Size\ Extreme.qfilter
+}
+
+function hide_home_applications() {
+    step "Hiding Application folder in home directory"
+    if [[ -d $HOME/Applications ]]; then
+        if [[ $(stat -f "%Xf" $HOME/Applications) -eq 8000 ]]; then
+            info "folder already hidden"
+        else
+            chflags hidden $HOME/Applications
+            success "successfully hidden"
+        fi
+    else
+        warning "Application folder in home directory does not exist"
+    fi
+}
+
+function profile_specifics() {
+    . ${DOTFILES_REPO}/profiles/setup-${PROFILE}.sh
+}
+
+function finish() {
+    echo ""
+    success "Finished successfully!"
+    info "Please restart your Terminal for the applied changes to take effect."
+}
+
+# Git helper
+
+function clone_or_update() {
+    step "Cloning ${1} repository into ${2}"
+    if test -e $2; then
+        info "${2} already exists"
+        pull_latest $1 $2
+    else
+        if git clone "$3" $2; then
+            success "${1} repository cloned into ${2}"
+        else
+            error "${1} repository cloning failed"
+        fi
+    fi
+}
+
+function pull_latest() {
+    step "Pulling latest changes in ${1} repository"
+    git -C $1 fetch &> /dev/null
+    if [ $(git -C $2 rev-parse HEAD) '==' $(git -C $2 rev-parse @{u}) ]; then
+        info "${1} already up to date"
+    else
+        if git -C $2 pull origin main &> /dev/null; then
+            success "Pull in ${1} successful"
+        else
+            error "Failed, please pull latest changes in ${1} repository manually"
+        fi
+    fi
+}
+
+# File helper
+
+function createFileIfNeeded() {
+    step "creating ${1} if needed"
+    if test -e $1; then
+        info "${1} already exists"
+    else
+        if touch $1; then
+            success "${1} created successfully"
+        else
+            error "${1} could not be created"
+        fi
+    fi
+}
+
+function copy_file() {
+    step "Copying ${1}"
+    if diff -q $2 $3 &> /dev/null; then
+        info "${1} already the same"
+    else
+        if cp $2 $3; then
+            success "${1} copied"
+        else
+            error "Failed to copy ${1}"
+        fi
+    fi
+}
+
+function addTemplateToFileIfNeeded() {
+    createFileIfNeeded $3
+    step "Setting up ${2} in ${3}"
+    if [[ -z $(comm -13 $3 $1) ]]; then
+        info "${2} already set up in ${3}"
+    else
+        if echo "$(cat ${1})" >> $3; then
+            success "${2} successfully set up in ${3}"
+        else
+            error "Failed to set up ${2} in ${3}"
+        fi
+    fi
+}
+
+## helper
+
+function opsignin() {
+    if op whoami 2>&1 | grep -c 'ERROR' &> /dev/null; then
+        warning "Logging into 1Password, your credentials are required:"
+        if op account list 2>&1 | grep -c 'ash@ashmcbri.de' &> /dev/null; then
+            eval "$(op signin)"
+        else
+            eval "$(op account add --address my.1password.co.uk --email ash@ashmcbri.de --signin)"
+        fi
+    fi
+}
+
+# Print helper
+
+function step() {
+    print -P "%F{blue}=> $1%f"
+}
+
+function info() {
+    print -P "%F{white}===> $1%f"
+}
+
+function warning() {
+    print -P "%F{yellow}===> $1%f"
+}
+
+function success() {
+    print -P "%F{green}===> $1%f"
+}
+
+function error() {
+    print -P "%F{red}===> $1%f"
+    print -P "%F{red}Aborting%f"
+    exit 1
+}
+
+main "$@";
+
