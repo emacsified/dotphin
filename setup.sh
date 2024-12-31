@@ -12,6 +12,7 @@ main() {
     configure_zsh
     configure_git
     configure_ssh
+	configure_dotfiles
     install_quartz_filter
     hide_home_applications
     profile_specifics
@@ -103,6 +104,17 @@ function configure_zsh() {
 function configure_git() {
     GIT_CONFIG_TEMPLATE="$DOTFILES_REPO/git/.gitconfig_template_$PROFILE"
     addTemplateToFileIfNeeded $GIT_CONFIG_TEMPLATE ".gitconfig include" $HOME/.gitconfig
+}
+
+function configure_dotfiles() {
+	configure_kitty()
+}
+
+configure_kitty() {
+	copy_file "kitty.conf" $DOTFILES_REPO/kitty/kitty.conf $HOME/.config/kitty/kitty.conf
+}
+configure_aerospace() {
+	copy_file "aerospace" $DOTFILES_REPO/aerospace/aerospace.toml $HOME/.config/aerospace/aerospace.toml
 }
 
 function configure_ssh() {
@@ -210,7 +222,7 @@ function addTemplateToFileIfNeeded() {
     if [[ -z $(comm -13 $3 $1) ]]; then
         info "${2} already set up in ${3}"
     else
-        if echo "$(cat ${1})" >> $3; then
+        if ln -s $1  $3; then
             success "${2} successfully set up in ${3}"
         else
             error "Failed to set up ${2} in ${3}"
