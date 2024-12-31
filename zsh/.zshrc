@@ -155,6 +155,6 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
 
-
+. "$HOME/.cargo/env"
 # init starship prompt
 eval "$(starship init zsh)"

@@ -12,6 +12,7 @@ main() {
     configure_zsh
     configure_git
     configure_ssh
+    configure_rust
 	configure_dotfiles
     install_quartz_filter
     hide_home_applications
@@ -152,6 +153,10 @@ function configure_ssh() {
     fi
     SSH_CONFIG_TEMPLATE="$DOTFILES_REPO/ssh/config_template_$PROFILE"
     addTemplateToFileIfNeeded $SSH_CONFIG_TEMPLATE "ssh config include" $HOME/.ssh/config
+}
+
+configure_rust() {
+    curl https://sh.rustup.rs -sSf | sh
 }
 
 function install_quartz_filter() {
