@@ -16,7 +16,7 @@
 [user]
 	name = Ash McBride
 	email = ash@ashmcbri.de
-	signingkey = 2CB691A35DD056B7
+	signingkey = 5C3E5C7460B27C4E4871BDAD2CB691A35DD056B7
 
 [diff]
 	# Detect copies as well as renames
@@ -64,7 +64,3 @@
 
 [gpg]
 	program = gpg
-	format = ssh
-
-[gpg "ssh"]
-	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
