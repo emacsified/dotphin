@@ -14,15 +14,15 @@ brew "mas"
 # brew
 ############################################################################
 brew "git"
-brew "git-lfs"
 brew "tig"
 
-brew "mise"
+brew "mise" # version manager
 
 brew "zsh-history-substring-search"
 brew "zsh-syntax-highlighting"
 brew "zsh-autosuggestions"
 brew "zsh-vi-mode"
+brew "starship"
 
 brew "tree"
 brew "htop"
@@ -32,7 +32,6 @@ brew "jq"
 brew "bfg"
 brew "thefuck"
 brew "wget"
-brew "starship"
 brew "direnv"
 
 brew "coreutils"
