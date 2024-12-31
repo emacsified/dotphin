@@ -28,6 +28,20 @@ return {
             ensure_installed = {
                 "lua_ls",
                 "rust_analyzer",
+                "gopls",
+                "dockerls",
+                "bashls",
+                "cssls",
+                "graphql",
+                "html",
+                "templ",
+                "htmx",
+                "ts_ls",
+                "jsonls",
+                "marksman",
+                "tflint",
+                "zls",
+                "yamlls"
             },
             handlers = {
                 function(server_name) -- default handler (optional)
