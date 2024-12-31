@@ -5,7 +5,7 @@ SSH_DIR="$HOME/.ssh"
 cp "$DOTFILES_REPO/ssh/publicKeys/id_rsa.pub" "$SSH_DIR/id_rsa.pub"
 
 step "Setup GPG Key"
-if [[ $(gpg --list-secret-keys 2>/dev/null | grep -w C8AACEF6A67C274C511187F231655A5065AD2BFD) ]] ; then
+if [[ $(gpg --list-secret-keys 2>/dev/null | grep -w 5C3E5C7460B27C4E4871BDAD2CB691A35DD056B7) ]] ; then
     info "GPG key already installed"
 else
     opsignin
@@ -13,10 +13,26 @@ else
     trap "rm -f $temp_file" 0 2 3 15
     op document get "private.key" --output $temp_file
     gpg --import --batch $temp_file &> /dev/null
-    expect -c 'spawn gpg --edit-key C8AACEF6A67C274C511187F231655A5065AD2BFD trust quit; send "5\ry\r"; expect eof' &> /dev/null
+    expect -c 'spawn gpg --edit-key 5C3E5C7460B27C4E4871BDAD2CB691A35DD056B7 trust quit; send "5\ry\r"; expect eof' &> /dev/null
     success "Installed GPG Key"
     rm -f $temp_file
 fi
+
+step "Setup SSH Keys"
+if [ -f "$HOME/.ssh/id_rsa" ]; then
+	info "SSH key already exists"
+else
+	opsignin
+	temp_file=$(mktemp)
+	trap "rm -f $temp_file" 0 2 3 15
+	op document get "ssh.key" --output $temp_file
+	mkdir -p $HOME/.ssh
+	cp $temp_file $HOME/.ssh/id_rsa
+	chmod 600 $HOME/.ssh/id_rsa
+	success "Installed SSH Key"
+	rm -f $temp_file
+fi
+
 
 #step "Setup Project folder"
 #PROJECTS_DIR="$HOME/Code"

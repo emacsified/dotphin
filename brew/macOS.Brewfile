@@ -3,9 +3,7 @@
 ############################################################################
 tap "homebrew/bundle"
 tap "homebrew/services"
-tap "homebrew/cask-fonts"
 tap "homebrew/command-not-found"
-tap "homebrew/cask-versions"
 
 ############################################################################
 # mas (Needs to be first because some other formulas depend on Xcode)
@@ -49,6 +47,7 @@ brew "python"
 brew "gnupg"
 brew "rsync"
 brew "vegeta"
+brew "fzf"
 
 
 ############################################################################

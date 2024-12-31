@@ -12,7 +12,6 @@ main() {
     configure_zsh
     configure_git
     configure_ssh
-    configure_vscode
     install_quartz_filter
     hide_home_applications
     profile_specifics
@@ -114,30 +113,6 @@ function configure_ssh() {
     addTemplateToFileIfNeeded $SSH_CONFIG_TEMPLATE "ssh config include" $HOME/.ssh/config
 }
 
-function configure_vscode() {
-    if [[ ! -d $HOME/Library/Application\ Support/Code/User ]]; then
-        mkdir -p $HOME/Library/Application\ Support/Code/User
-    fi
-    copy_file "VSCode settings" $DOTFILES_REPO/vscode/settings.json $HOME/Library/Application\ Support/Code/User/settings.json
-    copy_file "VSCode keybindings" $DOTFILES_REPO/vscode/keybindings.json $HOME/Library/Application\ Support/Code/User/keybindings.json
-
-    EXTENSIONS_INSTALLED=$(code --list-extensions)
-    for extension in `cat $DOTFILES_REPO/vscode/extensions.txt $DOTFILES_REPO/vscode/extensions-$PROFILE.txt`
-    do
-        step "Installing VSCode extension $extension"
-        if echo $EXTENSIONS_INSTALLED | grep -c $extension &> /dev/null; then
-            info "VSCode extension $extension already installed"
-        else
-            if code --install-extension $extension &> /dev/null; then
-                success "VSCode extension $extension installed successfully"
-            else
-                error "Failed to install VSCode extension $extension"
-            fi
-        fi
-    done
-}
-
-
 function install_quartz_filter() {
     if [[ ! -d $HOME/Library/Filters ]]; then
         mkdir -p $HOME/Library/Filters
@@ -221,7 +196,7 @@ function copy_file() {
     if diff -q $2 $3 &> /dev/null; then
         info "${1} already the same"
     else
-        if cp $2 $3; then
+        if ln -s $2 $3; then
             success "${1} copied"
         else
             error "Failed to copy ${1}"
