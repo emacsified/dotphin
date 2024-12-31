@@ -113,17 +113,24 @@ function configure_dotfiles() {
 	configure_mise
 	configure_nvim
     configure_tmux_sessionizer
+    configure_gh
 }
 
 configure_tmux_sessionizer() {
     copy_file "tmux-sessionizer" $DOTFILES_REPO/tmux/tmux-sessionizer.sh $HOME/.local/bin/tmux-sessionizer.sh
     chmod +x $HOME/.local/bin/tmux-sessionizer.sh
+}
 
 configure_kitty() {
 	copy_file "kitty.conf" $DOTFILES_REPO/kitty/kitty.conf $HOME/.config/kitty/kitty.conf
 }
+
 configure_aerospace() {
 	copy_file "aerospace" $DOTFILES_REPO/aerospace/aerospace.toml $HOME/.config/aerospace/aerospace.toml
+}
+
+configure_gh() {
+    ln -s $DOTFILES_REPO/gh/ $HOME/.config/gh/
 }
 
 configure_tmux() {

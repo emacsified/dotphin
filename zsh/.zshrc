@@ -148,5 +148,13 @@ export FZF_DEFAULT_OPTS=" \
 # init mise for version managing
 eval "$(mise activate zsh)"
 
+
+bindkey '^R' history-incremental-search-backward
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+
+
 # init starship prompt
 eval "$(starship init zsh)"
