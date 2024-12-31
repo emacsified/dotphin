@@ -98,7 +98,7 @@ function link_brew_completions() {
 }
 
 function configure_zsh() {
-    addTemplateToFileIfNeeded $DOTFILES_REPO/zsh/.zshrc_template ".zshrc source" $HOME/.zshrc
+    copy_file "zshrc" $DOTFILES_REPO/zsh/.zshrc $HOME/.zshrc
 }
 
 function configure_git() {
