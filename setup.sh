@@ -111,6 +111,7 @@ function configure_dotfiles() {
 	configure_aerospace
 	configure_tmux
 	configure_mise
+	configure_nvim
 }
 
 configure_kitty() {
@@ -126,6 +127,9 @@ configure_tmux() {
 	git clone https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin
 }
 
+configure_nvim() {
+	ln -s $DOTFILES_REPO/nvim $HOME/.config/nvim
+}
 configure_mise() {
 	copy_file "mise" $DOTFILES_REPO/mise/mise.toml $HOME/.config/mise/mise.toml
 }
