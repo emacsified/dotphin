@@ -9,7 +9,10 @@ It will:
 - Configure dotfiles for various apps (`./zsh`, `./vim`...)
 
 ## Running
-- If you trust me, you can simply run `curl -s https://raw.githubusercontent.com/emacsified/dotfiles/main/setup.sh | bash`A
+- If you trust me, you can simply run the following.
+```bash
+curl -s https://raw.githubusercontent.com/emacsified/dotfiles/main/setup.sh | bash
+```
 
 > [!WARNING]
 > This script should double-check for file existence to ensure it does not clobber existing files, however this is not guaranteed.
@@ -36,7 +39,9 @@ This will run the setup script, which will:
 
 ## GPG signing
 This script will configure GPG signing with 1password. To do this, you will need to have 1password installed and have the CLI installed.
+
 You will also need to have a GPG key in 1password, by default under a document titled `private.key`.
+
 This can be changed in `profiles/setup-work.sh`
 
 ## SSH Keys
@@ -45,6 +50,7 @@ This script will also configure SSH keys. You will need to have your SSH keys in
 ## Thanks
 ### Dotfiles
 Thanks to [Steffen Kötte](github.com/Nef10/dotfiles), [Sam Hosseini](github.com/sam-hosseini/dotfiles) and [Mathias Bynens](github.com/mathiasbynens/dotfiles) for inspiration and code snippets.
+
 This project began as an effective fork of Steffen's dotfiles, but is under active modification.
 
 ### NVim
