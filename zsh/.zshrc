@@ -76,9 +76,8 @@ export PATH="$PNPM_HOME:$PATH"
 export GOOGLE_CREDENTIALS=~/Documents/platform-provisioning.json
 
 # 4 - gcloud nandos-api-platform
-#SECRET_PROD="/Users/john.gillott/dev/.secrets/prod-platform-provisioning.json"
-#SECRET_DEV="/Users/john.gillott/dev/.secrets/dev-platform-provisioning.json"
-export SECRET_DEV=~/Documents/platform-provisioning.json
+export SECRET_DEV=~/gcpauth/platform-provisioning-dev.json
+export SECRET_PROD=~/gcpauth/platform-provisioning-prod.json
 
 alias prod='export GOOGLE_APPLICATION_CREDENTIALS='$SECRET_PROD' \
  && gcloud config set account platform-provisioning-prod@nandos-api-platform-production.iam.gserviceaccount.com \
@@ -90,8 +89,7 @@ alias preprod='export GOOGLE_APPLICATION_CREDENTIALS='$SECRET_DEV' \
  && gcloud config set project nandos-api-platform && gcloud auth activate-service-account --key-file '$SECRET_DEV' \
  && if [ $(dig +short A -4 dns-check.preprod.nandos.services) = "35.246.26.213" ]; then gcloud container clusters get-credentials dev-preprod-blue --region europe-west2; else gcloud container clusters get-credentials dev-preprod-green --region europe-west2; fi'
 
-alias dev='export GOOGLE_APPLICATION_CREDENTIALS='$SECRET_DEV' \
- && gcloud config set account platform-provisioning@nandos-api-platform.iam.gserviceaccount.com \
+alias dev='gcloud config set account platform-provisioning@nandos-api-platform.iam.gserviceaccount.com \
  && gcloud config set project nandos-api-platform && gcloud auth activate-service-account --key-file '$SECRET_DEV' \
  && if [ $(dig +short A -4 dns-check.dev.nandos.services) = "35.235.54.199" ]; then gcloud container clusters get-credentials dev-preview-blue --region europe-west2; else gcloud container clusters get-credentials dev-preview-green --region europe-west2; fi'
 

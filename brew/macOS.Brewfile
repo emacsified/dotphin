@@ -47,6 +47,11 @@ brew "gnupg"
 brew "rsync"
 brew "vegeta"
 brew "fzf"
+brew "kubectl"
+brew "kubernetes-cli"
+brew "kubectx"
+brew "kubeseal"
+brew "kustomize"
 
 
 ############################################################################
