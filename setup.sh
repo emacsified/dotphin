@@ -16,6 +16,7 @@ main() {
 	configure_dotfiles
     install_quartz_filter
     hide_home_applications
+    setup_repos
     profile_specifics
     if [[ "$1" != "--update" ]]; then
         finish
@@ -265,6 +266,60 @@ function addTemplateToFileIfNeeded() {
             error "Failed to set up ${2} in ${3}"
         fi
     fi
+}
+
+function setup_repos() {
+    step "Creating repo directories"
+    if [[ -d $HOME/Code ]]; then
+        info "Projects directory already exists"
+    else
+        mkdir $HOME/Code
+        success "Projects directory created"
+    fi
+    if [[ -d $HOME/Code/personal ]]; then
+        info "Personal directory already exists"
+    else
+        mkdir $HOME/Code/personal
+        success "Personal directory created"
+    fi
+    if [[ -d $HOME/Code/work]]; then
+        info "Work directory already exists"
+    else
+        mkdir $HOME/Code/work
+        success "Work directory created"
+    fi
+    step "Cloning repos"
+    if [[ -d $HOME/Code/personal/ashmcbri.de]]; then
+        info "ashmcbri.de directory already exists"
+    else
+        git clone git@gitlab.com:emaxxx/ashmcbri.de.git $HOME/Code/personal/ashmcbri.de
+        success "ashmcbri.de directory created"
+    fi
+    if [[ -d $HOME/Code/personal/artemis]]; then
+        info "artemis directory already exists"
+    else
+        git clone git@github.com:artemis-torr/tracker.git $HOME/Code/personal/artemis
+        success "artemis directory created"
+    fi
+    if [[ -d $HOME/Code/work/nandos-platform ]]; then
+        info "nandos-platform directory already exists"
+    else
+        git clone git@github.com:NandosUK/nandos-platform.git $HOME/Code/work/nandos-platform
+        success "nandos-platform directory created"
+    fi
+    if [[ -d $HOME/Code/work/nossa-casa-next ]]; then
+        info "nossa-casa-next directory already exists"
+    else
+        git clone git@github.com:NandosUK/nossa-casa-next.git $HOME/Code/work/nossa-casa-next
+        info "nossa-casa-next directory created"
+    fi
+    if [[ -d $HOME/Code/work/platform-config ]]; then
+        info "platform-config directory already exists"
+    else
+        git clone git@github.com:NandosUK/platform-config.git $HOME/Code/work/platform-config
+        success "platform-config directory created"
+    fi
+
 }
 
 ## helper
