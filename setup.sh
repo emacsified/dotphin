@@ -157,6 +157,9 @@ function configure_ssh() {
 
 configure_rust() {
     curl https://sh.rustup.rs -sSf | sh
+    rustup install nightly
+    rustup component add rustfmt --toolchain nightly
+    rustup component add clippy --toolchain nightly
 }
 
 function install_quartz_filter() {
