@@ -52,7 +52,7 @@ function ask_for_sudo() {
 }
 
 function clone_dotfiles_repo() {
-    clone_or_update "Dotfiles" ${DOTFILES_REPO} "https://github.com/emacsified/dotfiles.git"
+    clone_or_update "Dotfiles" ${DOTFILES_REPO} "https://github.com/emacsified/dotphin.git"
     echo $PROFILE > $DOTFILES_REPO/profile
 }
 
