@@ -8,7 +8,7 @@ export DOTFILES="$HOME/.dotfiles"
 # your project folder that we can `c [tab]` to
 export PROJECTS="$HOME/Code"
 
-alias ls=colorls
+alias ls="ls -G"
 
 # your default editor
 alias vim=nvim

@@ -73,4 +73,4 @@ cask "1password-cli"
 cask "syntax-highlight"
 cask "spotify"
 cask "docker"
-
+cask "obsidian"

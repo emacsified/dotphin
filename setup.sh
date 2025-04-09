@@ -100,10 +100,12 @@ function link_brew_completions() {
 }
 
 function configure_zsh() {
+    backup_file_if_exists $HOME/.zshrc
     copy_file "zshrc" $DOTFILES_REPO/zsh/.zshrc $HOME/.zshrc
 }
 
 function configure_git() {
+    backup_file_if_exists $HOME/.gitconfig
     GIT_CONFIG_TEMPLATE="$DOTFILES_REPO/git/.gitconfig_template_$PROFILE"
     addTemplateToFileIfNeeded $GIT_CONFIG_TEMPLATE ".gitconfig include" $HOME/.gitconfig
 }
@@ -119,39 +121,50 @@ function configure_dotfiles() {
 }
 
 configure_tmux_sessionizer() {
+    create_folder_if_not_existing $HOME/.local/bin
+    backup_file_if_exists  $HOME/.local/bin
     copy_file "tmux-sessionizer" $DOTFILES_REPO/tmux/tmux-sessionizer.sh $HOME/.local/bin/tmux-sessionizer.sh
     chmod +x $HOME/.local/bin/tmux-sessionizer.sh
 }
 
 configure_kitty() {
+    create_folder_if_not_existing $HOME/.config/kitty
+    backup_file_if_exists $HOME/.config/kitty/kitty.conf
 	copy_file "kitty.conf" $DOTFILES_REPO/kitty/kitty.conf $HOME/.config/kitty/kitty.conf
 }
 
 configure_aerospace() {
+    create_folder_if_not_existing $HOME/.config/aerospace
+    backup_file_if_exists $HOME/.config/aerospace
 	copy_file "aerospace" $DOTFILES_REPO/aerospace/aerospace.toml $HOME/.config/aerospace/aerospace.toml
 }
 
 configure_gh() {
+    backup_file_if_exists $HOME/.config/gh
     ln -s $DOTFILES_REPO/gh/ $HOME/.config/gh/
 }
 
 configure_tmux() {
+    create_folder_if_not_existing $HOME/.config/tmux/plugins
+    backup_file_if_exists $HOME/.tmux.conf
 	copy_file "tmux.conf" $DOTFILES_REPO/tmux/tmux.conf $HOME/.tmux.conf
-	mkdir -p ~/.config/tmux/plugins/catppuccin
 	git clone https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin
 }
 
 configure_nvim() {
+    create_folder_if_not_existing $HOME/.config
+    backup_file_if_exists $HOME/.config/nvim
 	ln -s $DOTFILES_REPO/nvim $HOME/.config/nvim
 }
 configure_mise() {
+    create_folder_if_not_existing $HOME/.config/mise
+    backup_file_if_exists $HOME/.config/mise/mise.toml
 	copy_file "mise" $DOTFILES_REPO/mise/mise.toml $HOME/.config/mise/mise.toml
 }
 
 function configure_ssh() {
-    if [[ ! -d $HOME/.ssh ]]; then
-        mkdir $HOME/.ssh
-    fi
+    create_folder_if_not_existing $HOME/.ssh
+    backup_file_if_exists $HOME/.ssh/config
     SSH_CONFIG_TEMPLATE="$DOTFILES_REPO/ssh/config_template_$PROFILE"
     addTemplateToFileIfNeeded $SSH_CONFIG_TEMPLATE "ssh config include" $HOME/.ssh/config
 }
@@ -164,9 +177,7 @@ configure_rust() {
 }
 
 function install_quartz_filter() {
-    if [[ ! -d $HOME/Library/Filters ]]; then
-        mkdir -p $HOME/Library/Filters
-    fi
+    create_folder_if_not_existing $HOME/Library/Filters
     copy_file "Quartz Filter Minimal" $DOTFILES_REPO/quartz/Reduce\ File\ Size\ Minimal.qfilter $HOME/Library/Filters/Reduce\ File\ Size\ Minimal.qfilter
     copy_file "Quartz Filter Medium" $DOTFILES_REPO/quartz/Reduce\ File\ Size\ Medium.qfilter $HOME/Library/Filters/Reduce\ File\ Size\ Medium.qfilter
     copy_file "Quartz Filter Extreme" $DOTFILES_REPO/quartz/Reduce\ File\ Size\ Extreme.qfilter $HOME/Library/Filters/Reduce\ File\ Size\ Extreme.qfilter
@@ -332,6 +343,19 @@ function opsignin() {
         else
             eval "$(op account add --address my.1password.co.uk --email ash@ashmcbri.de --signin)"
         fi
+    fi
+}
+
+function backup_file_if_exists(file) {
+    if test -f "$file"; then
+        mv "$file" "$file".bak
+    fi
+}
+
+function create_folder_if_not_existing(folder) {
+    if [ ! -d "$folder" ]; then
+        # could still be a symlink
+        mkdir -p "$folder"
     fi
 }
 
