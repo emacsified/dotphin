@@ -4,6 +4,7 @@
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "homebrew/command-not-found"
+tap "railwaycat/emacsmacport"
 
 ############################################################################
 # mas (Needs to be first because some other formulas depend on Xcode)
@@ -35,6 +36,8 @@ brew "wget"
 brew "direnv"
 
 brew "coreutils"
+brew "cmake"
+brew "fd"
 brew "neovim"
 brew "tmux"
 brew "luarocks"
